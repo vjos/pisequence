@@ -28,9 +28,9 @@ pygame.mixer.pre_init(22050, -16, 1, 256)
 pygame.mixer.init()
 pygame.init()
 
-snd1 = pygame.mixer.Sound('kick3.wav')
-snd2 = pygame.mixer.Sound('hats2.wav')
-snd3 = pygame.mixer.Sound('snare2.wav')
+snd1 = pygame.mixer.Sound('sounds/kick3.wav')
+snd2 = pygame.mixer.Sound('sounds/hats2.wav')
+snd3 = pygame.mixer.Sound('sounds/snare2.wav')
 
 def playKick():
     snd1.play()
