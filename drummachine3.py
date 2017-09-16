@@ -4,8 +4,8 @@ from time import sleep
 import pygame
 import tkinter
 
-stepList = "0110010011010111000111000111001010101010101000011111110000000001"
-
+stepList = "1000010000100100000111000111001010101010101000011111110000000001"
+sequencePlaying = False
 
 button1 = Button(2)
 button2 = Button(3)
@@ -28,9 +28,10 @@ pygame.mixer.pre_init(22050, -16, 1, 256)
 pygame.mixer.init()
 pygame.init()
 
-snd1 = pygame.mixer.Sound('sounds/kick3.wav')
-snd2 = pygame.mixer.Sound('sounds/hats2.wav')
-snd3 = pygame.mixer.Sound('sounds/snare2.wav')
+snd1 = pygame.mixer.Sound('kick3.wav')
+snd2 = pygame.mixer.Sound('hats2.wav')
+snd3 = pygame.mixer.Sound('snare2.wav')
+snd4 = pygame.mixer.Sound('hats2.wav')
 
 def playKick():
     snd1.play()
@@ -50,14 +51,64 @@ def playSnare():
     sleep(0.1)
     ledGreen.toggle()
 
+def playCowbell():
+    snd4.play()
+    ledYellow.toggle()
+    sleep(0.1)
+    ledYellow.toggle()
+
 def newSequence():
     pass
 
+def playSequence():
+    global sequencePlaying
+    sequencePlaying = True
+    print("PLAY")
+
+def pauseSequence():
+    global sequencePlaying
+    sequencePlaying = False
+    print("PAUSE")
+
+def playpause():
+    if(sequencePlaying):
+        pauseSequence()
+    else:
+        playSequence()
+
+    if(sequencePlaying):
+        drum = 0
+        step = 1
+        kick = False
+        hats = False
+        snare = False
+        cowbell = False
+        for i in range(len(stepList)):
+            if(int(stepList[i]) == 1 and i%4 == 0):
+                #trigger bass drum
+                playKick()
+            if(int(stepList[i]) and (i+3)%4 == 0):
+                #trigger hats
+                playHats()
+            if(int(stepList[i]) and (i+2)%4 == 0):
+                #trigger snare
+                playSnare()
+            if(int(stepList[i]) and (i+1)%4 == 0):
+                #trigger cowbell
+                playCowbell()
+            drum += 1
+            if(drum == 4):        
+                step += 1
+                drum = 0
+                sleep(0.3)
+            
+                
 def liveMachine():
     #assign hardware buttons to drum functions
     button8.when_pressed = playKick
     button7.when_pressed = playHats
     button6.when_pressed = playSnare
+    button5.when_pressed = playCowbell
 
     #GUI
     top = tkinter.Tk()
@@ -78,12 +129,14 @@ def liveMachine():
     menubar.add_cascade(label="RNN", menu=rnnmenu)
     
     #assigning drum functions to software buttons
-    kickButton = tkinter.Button(top, text ="Kick", command = playKick, width=6, fg='white', bg='blue')
+    kickButton = tkinter.Button(top, text ="Kick", command = playKick, width=7, fg='white', bg='blue')
     kickButton.pack(side=tkinter.LEFT)
-    hatsButton = tkinter.Button(top, text ="Hats", command = playHats, width=6, fg='white', bg='red')
+    hatsButton = tkinter.Button(top, text ="Hats", command = playHats, width=7, fg='white', bg='red')
     hatsButton.pack(side=tkinter.LEFT)
-    snareButton = tkinter.Button(top, text ="Snare", command = playSnare, width=6, fg='white', bg='green')
+    snareButton = tkinter.Button(top, text ="Snare", command = playSnare, width=7, fg='white', bg='green')
     snareButton.pack(side=tkinter.LEFT)
+    cowbellButton = tkinter.Button(top, text ="Cowbell", command = playCowbell, width=7, fg='black', bg='yellow')
+    cowbellButton.pack(side=tkinter.LEFT)
 
     #more tkinter stuff
     top.config(menu=menubar)
@@ -97,6 +150,9 @@ def sequencer():
     top = tkinter.Tk()
     menubar = tkinter.Menu(top)
 
+    #play function
+    button1.when_pressed = playpause
+ 
     #menu bars
     filemenu = tkinter.Menu(menubar, tearoff=0)
     filemenu.add_command(label="New", command=newSequence)
@@ -143,6 +199,7 @@ def sequencer():
             else:
                 canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2 + squareSize, squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize*2, fill="light cyan")
                 counter += 1
+
             
     #more tkinter stuff
     top.config(menu=menubar)
