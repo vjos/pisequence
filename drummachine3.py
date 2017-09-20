@@ -10,6 +10,8 @@ directory = os.getcwd()
 step = 0
 stepList = ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1',]
 
+bpm = 120
+
 sequencePlaying = False
 
 button1 = Button(2)
@@ -73,42 +75,40 @@ def read(number):
     return string
 
 
-#the following functions toggle each drum for the selected step
-#TODO: add switch functions, also an update grid function and replace the part in new with that
 def switchKick():
     if(int(stepList[step*4]) == 1):
         canvas1.itemconfig(canvasList[step*4],fill='white')
-        stepList[step*4] = 0
+        stepList[step*4] = '0'
     else:
         canvas1.itemconfig(canvasList[step*4],fill='cornflower blue')
-        stepList[step*4] = 1
+        stepList[step*4] = '1'
     canvas1.after(1,newSequence)
 
 def switchHats():
     if(int(stepList[(step*4) + 1]) == 1):
         canvas1.itemconfig(canvasList[(step*4) + 1],fill='white')
-        stepList[(step*4) + 1] = 0
+        stepList[(step*4) + 1] = '0'
     else:
         canvas1.itemconfig(canvasList[(step*4) + 1],fill='salmon3')
-        stepList[(step*4) + 1] = 1
+        stepList[(step*4) + 1] = '1'
     canvas1.after(1,newSequence)
 
 def switchSnare():
     if(int(stepList[(step*4) + 2]) == 1):
         canvas1.itemconfig(canvasList[(step*4) + 2],fill='white')
-        stepList[(step*4) + 2] = 0
+        stepList[(step*4) + 2] = '0'
     else:
         canvas1.itemconfig(canvasList[(step*4) + 2],fill='medium spring green')
-        stepList[(step*4) + 2] = 1
+        stepList[(step*4) + 2] = '1'
     canvas1.after(1,newSequence)
 
 def switchCowbell():
     if(int(stepList[(step*4) + 3]) == 1):
         canvas1.itemconfig(canvasList[(step*4) + 3],fill='white')
-        stepList[(step*4) + 3] = 0
+        stepList[(step*4) + 3] = '0'
     else:
         canvas1.itemconfig(canvasList[(step*4) + 3],fill='goldenrod1')
-        stepList[(step*4) + 3] = 1
+        stepList[(step*4) + 3] = '1'
     canvas1.after(1,newSequence)
         
 
@@ -187,7 +187,7 @@ def playpause():
             if(drum == 4):        
                 nextStep()
                 drum = 0
-                sleep(0.3)
+                sleep(60/(4*bpm))
 
 def previousStep():
     global step
