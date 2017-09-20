@@ -8,8 +8,7 @@ import os
 directory = os.getcwd()
 
 step = 0
-stepList = "1111111100100100000111000111001010101010101000011111110000000001"
-newStepList = "0000000000000000000000000000000000000000000000000000000000000000"
+stepList = ['1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1','1',]
 
 sequencePlaying = False
 
@@ -39,7 +38,7 @@ snd2 = pygame.mixer.Sound('hats2.wav')
 snd3 = pygame.mixer.Sound('snare2.wav')
 snd4 = pygame.mixer.Sound('hats2.wav')
 
-def save(string):
+def write(string):
     directory_list = os.listdir(directory)
     next_free = 0
     number = ''
@@ -57,10 +56,13 @@ def save(string):
         number = ''
 
     next_free += 1
+
+    listToString = ''.join(string)
         
     file_name = ("sequence" + str(next_free) + ".txt")
+    print("Saved " + file_name)
     F = open(file_name, "w")
-    F.write(string)
+    F.write(listToString)
     F.close() 
 
 def read(number):
@@ -69,6 +71,48 @@ def read(number):
     string = F.read()
     F.close()
     return string
+
+
+#the following functions toggle each drum for the selected step
+#TODO: add switch functions, also an update grid function and replace the part in new with that
+def switchKick():
+    if(int(stepList[step*4]) == 1):
+        canvas1.itemconfig(canvasList[step*4],fill='white')
+        stepList[step*4] = 0
+    else:
+        canvas1.itemconfig(canvasList[step*4],fill='cornflower blue')
+        stepList[step*4] = 1
+    canvas1.after(1,newSequence)
+
+def switchHats():
+    if(int(stepList[(step*4) + 1]) == 1):
+        canvas1.itemconfig(canvasList[(step*4) + 1],fill='white')
+        stepList[(step*4) + 1] = 0
+    else:
+        canvas1.itemconfig(canvasList[(step*4) + 1],fill='salmon3')
+        stepList[(step*4) + 1] = 1
+    canvas1.after(1,newSequence)
+
+def switchSnare():
+    if(int(stepList[(step*4) + 2]) == 1):
+        canvas1.itemconfig(canvasList[(step*4) + 2],fill='white')
+        stepList[(step*4) + 2] = 0
+    else:
+        canvas1.itemconfig(canvasList[(step*4) + 2],fill='medium spring green')
+        stepList[(step*4) + 2] = 1
+    canvas1.after(1,newSequence)
+
+def switchCowbell():
+    if(int(stepList[(step*4) + 3]) == 1):
+        canvas1.itemconfig(canvasList[(step*4) + 3],fill='white')
+        stepList[(step*4) + 3] = 0
+    else:
+        canvas1.itemconfig(canvasList[(step*4) + 3],fill='goldenrod1')
+        stepList[(step*4) + 3] = 1
+    canvas1.after(1,newSequence)
+        
+
+
 
 def playKick():
     snd1.play()
@@ -141,51 +185,87 @@ def playpause():
             highlightNext(i)
             
             if(drum == 4):        
-                step += 1
+                nextStep()
                 drum = 0
                 sleep(0.3)
 
-def drawGrid():
-    counter = 0
+def previousStep():
+    global step
 
-    canvasList = []
+    step -= 1
+    if(step < 0):
+        step = 15
+        
+    for i in range(step*4,step*4 + 4,1):
+        highlightPrev(i)
+
+def nextStep():
+    global step
+
+    step += 1
+    if(step > 15):
+        step = 0
     
-    for j in range(4):
-        for i in range(4):
-            if(int(stepList[counter]) == 1):
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2,              squareSize*2*i + squareSize,   squareSize*j*2 + squareSize, fill="blue"))
-                counter += 1
-            else:
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2,              squareSize*2*i + squareSize,   squareSize*j*2 + squareSize, fill="light cyan"))
-                counter += 1
-            if(int(stepList[counter]) == 1):
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2,              squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize, fill="red"))
-                counter += 1
-            else:
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2,              squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize, fill="light cyan"))
-                counter += 1
-            if(int(stepList[counter]) == 1):
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2 + squareSize, squareSize*2*i + squareSize,   squareSize*j*2 + squareSize*2, fill="green"))
-                counter += 1
-            else:
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2 + squareSize, squareSize*2*i + squareSize,   squareSize*j*2 + squareSize*2, fill="light cyan"))
-                counter += 1
-            if(int(stepList[counter]) == 1):
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2 + squareSize, squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize*2, fill="yellow"))
-                counter += 1
-            else:
-                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2 + squareSize, squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize*2, fill="light cyan"))
-                counter += 1
+    for i in range(step*4,step*4 + 4,1):
+        highlightNext(i)
 
 def new():
     global stepList
-    global newStepList
-    stepList = newStepList
 
+    stepList = ['0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0',]
+        
     for i in range(63):
         canvas1.itemconfig(canvasList[i],fill='light cyan')
         
-    canvas1.update()
+    canvas1.after(1,newSequence)
+    resetHighlight()
+    
+
+def save():
+    global stepList
+    write(stepList)
+
+def resetHighlight():
+    for square in range(64):
+        if(square%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='blue')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='light cyan')
+        elif((square+3)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='red')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='light cyan')
+        elif((square+2)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='green')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='light cyan')
+        elif((square+1)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='yellow')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='light cyan')
+
+    if(int(stepList[0]) == 1):
+        canvas1.itemconfig(canvasList[0],fill='cornflower blue')
+    else:
+        canvas1.itemconfig(canvasList[0],fill='white')
+    if(int(stepList[1]) == 1):
+        canvas1.itemconfig(canvasList[1],fill='salmon3')
+    else:
+        canvas1.itemconfig(canvasList[1],fill='white')
+    if(int(stepList[2]) == 1):
+        canvas1.itemconfig(canvasList[2],fill='medium spring green')
+    else:
+        canvas1.itemconfig(canvasList[2],fill='white')
+    if(int(stepList[3]) == 1):
+        canvas1.itemconfig(canvasList[3],fill='goldenrod1')
+    else:
+        canvas1.itemconfig(canvasList[3],fill='white')    
+    
+    canvas1.after(1,newSequence)
 
 def highlightNext(square):
     if(square==0):
@@ -262,6 +342,82 @@ def highlightNext(square):
             else:
                 canvas1.itemconfig(canvasList[square-4],fill='light cyan')
     canvas1.after(1, newSequence)
+
+def highlightPrev(square):
+    if(square==60):
+        if(int(stepList[square]) == 1):
+            canvas1.itemconfig(canvasList[square],fill='cornflower blue')
+        else:
+            canvas1.itemconfig(canvasList[square],fill='white')
+        if(int(stepList[square-60]) == 1):
+            canvas1.itemconfig(canvasList[square-60],fill='blue')
+        else:
+            canvas1.itemconfig(canvasList[square-60],fill='light cyan')
+    elif(square==61):
+        if(int(stepList[square]) == 1):
+            canvas1.itemconfig(canvasList[square],fill='salmon3')
+        else:
+            canvas1.itemconfig(canvasList[square],fill='white')
+        if(int(stepList[square-60]) == 1):
+            canvas1.itemconfig(canvasList[square-60],fill='red')
+        else:
+            canvas1.itemconfig(canvasList[square-60],fill='light cyan')
+    elif(square==62):
+        if(int(stepList[square]) == 1):
+            canvas1.itemconfig(canvasList[square],fill='medium spring green')
+        else:
+            canvas1.itemconfig(canvasList[square],fill='white')
+        if(int(stepList[square-60]) == 1):
+            canvas1.itemconfig(canvasList[square-60],fill='green')
+        else:
+            canvas1.itemconfig(canvasList[square-60],fill='light cyan')
+    elif(square==63):
+        if(int(stepList[square]) == 1):
+            canvas1.itemconfig(canvasList[square],fill='goldenrod1')
+        else:
+            canvas1.itemconfig(canvasList[square],fill='white')
+        if(int(stepList[square-60]) == 1):
+            canvas1.itemconfig(canvasList[square-60],fill='yellow')
+        else:
+            canvas1.itemconfig(canvasList[square-60],fill='light cyan')
+    else:
+        if(square%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='cornflower blue')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='white')
+            if(int(stepList[square+4]) == 1):
+                canvas1.itemconfig(canvasList[square+4],fill='blue')
+            else:
+                canvas1.itemconfig(canvasList[square+4],fill='light cyan')
+        elif((square+3)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='salmon3')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='white')
+            if(int(stepList[square+4]) == 1):
+                canvas1.itemconfig(canvasList[square+4],fill='red')
+            else:
+                canvas1.itemconfig(canvasList[square+4],fill='light cyan')
+        elif((square+2)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='medium spring green')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='white')
+            if(int(stepList[square+4]) == 1):
+                canvas1.itemconfig(canvasList[square+4],fill='green')
+            else:
+                canvas1.itemconfig(canvasList[square+4],fill='light cyan')
+        elif((square+1)%4 == 0):
+            if(int(stepList[square]) == 1):
+                canvas1.itemconfig(canvasList[square],fill='goldenrod1')
+            else:
+                canvas1.itemconfig(canvasList[square],fill='white')
+            if(int(stepList[square+4]) == 1):
+                canvas1.itemconfig(canvasList[square+4],fill='yellow')
+            else:
+                canvas1.itemconfig(canvasList[square+4],fill='light cyan')
+    canvas1.after(1, newSequence)
                        
 def liveMachine():
     #assign hardware buttons to drum functions
@@ -300,9 +456,6 @@ def liveMachine():
     top.config(menu=menubar)
     top.mainloop()
 
-    #idk if this is needed
-    #pause
-
 if(True):
     #GUI
     top = tkinter.Tk()
@@ -311,7 +464,7 @@ if(True):
     #menu bars
     filemenu = tkinter.Menu(menubar, tearoff=0)
     filemenu.add_command(label="New", command=new)
-    filemenu.add_command(label="Save", command=newSequence)
+    filemenu.add_command(label="Save", command=save)
     filemenu.add_command(label="Open", command=newSequence)
     filemenu.add_separator()
     filemenu.add_command(label="Switch Mode", command=liveMachine)
@@ -327,16 +480,52 @@ if(True):
     canvas1 = tkinter.Canvas(top, width=squareSize*8, height=squareSize*8)
     canvas1.pack()
     
-    drawGrid()
 
+    counter = 0
+
+    canvasList = []
+    
+    for j in range(4):
+        for i in range(4):
+            if(int(stepList[counter]) == 1):
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2,              squareSize*2*i + squareSize,   squareSize*j*2 + squareSize, fill="blue"))
+                counter += 1
+            else:
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2,              squareSize*2*i + squareSize,   squareSize*j*2 + squareSize, fill="light cyan"))
+                counter += 1
+            if(int(stepList[counter]) == 1):
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2,              squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize, fill="red"))
+                counter += 1
+            else:
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2,              squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize, fill="light cyan"))
+                counter += 1
+            if(int(stepList[counter]) == 1):
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2 + squareSize, squareSize*2*i + squareSize,   squareSize*j*2 + squareSize*2, fill="green"))
+                counter += 1
+            else:
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i,              squareSize*j*2 + squareSize, squareSize*2*i + squareSize,   squareSize*j*2 + squareSize*2, fill="light cyan"))
+                counter += 1
+            if(int(stepList[counter]) == 1):
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2 + squareSize, squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize*2, fill="yellow"))
+                counter += 1
+            else:
+                canvasList.append(canvas1.create_rectangle(squareSize*2*i + squareSize, squareSize*j*2 + squareSize, squareSize*i*2 + squareSize*2, squareSize*j*2 + squareSize*2, fill="light cyan"))
+                counter += 1
+
+    resetHighlight()
+                
     #play function
     button1.when_pressed = playpause
+    button2.when_pressed = nextStep
+    button3.when_pressed = previousStep
 
+    button8.when_pressed = switchKick
+    button7.when_pressed = switchHats
+    button6.when_pressed = switchSnare
+    button5.when_pressed = switchCowbell
 
     #more tkinter stuff
     top.config(menu=menubar)
-
     top.mainloop()
 
-    #pause()
 
